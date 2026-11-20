@@ -1,3 +1,4 @@
+import os
 import json
 import re
 import sqlite3
@@ -41,7 +42,97 @@ initialize_database()
 
 DATABASE_PATH = Path(__file__).resolve().parent / "app" / "nms.db"
 
+def initialize_demo_data():
+    try:
+        demo_setting = st.secrets.get(
+            "NMS_DEMO_MODE",
+            os.getenv("NMS_DEMO_MODE", "false")
+        )
+    except Exception:
+        demo_setting = os.getenv("NMS_DEMO_MODE", "false")
 
+    demo_mode = str(demo_setting).lower() == "true"
+
+    if not demo_mode:
+        return
+
+    with sqlite3.connect(DATABASE_PATH) as connection:
+        count = connection.execute(
+            "SELECT COUNT(*) FROM monitoring_results"
+        ).fetchone()[0]
+
+        if count > 0:
+            return
+
+        demo_devices = [
+            ("10.0.0.10", "ONLINE", 2.4),
+            ("10.0.0.11", "ONLINE", 5.1),
+            ("10.0.0.12", "OFFLINE", None),
+            ("10.0.0.13", "ONLINE", 3.2),
+            ("10.0.0.14", "ONLINE", 8.6),
+        ]
+
+        for ip, status, latency in demo_devices:
+            connection.execute(
+                """
+                INSERT INTO monitoring_results
+                (device_ip, check_type, status, details, latency_ms)
+                VALUES (?, 'DISCOVERY', ?, ?, ?)
+                """,
+                (ip, status, "DEMO DATA - Simulated discovery record", latency),
+            )
+
+            connection.execute(
+                """
+                INSERT INTO monitoring_results
+                (device_ip, check_type, status, details, latency_ms)
+                VALUES (?, 'REACHABILITY', ?, ?, ?)
+                """,
+                (ip, status, "DEMO DATA - Simulated reachability result", latency),
+            )
+
+        connection.execute(
+            """
+            INSERT INTO device_alerts
+            (device_ip, alert_type, message, status, severity, acknowledged)
+            VALUES
+            ('10.0.0.12', 'DEVICE_UNREACHABLE',
+             'DEMO DATA - Device is unreachable',
+             'ACTIVE', 'CRITICAL', 0)
+            """
+        )
+
+        connection.execute(
+            """
+            INSERT INTO device_alerts
+            (device_ip, alert_type, message, status, severity, acknowledged)
+            VALUES
+            ('10.0.0.14', 'HIGH_LATENCY',
+             'DEMO DATA - Elevated network latency',
+             'ACTIVE', 'WARNING', 0)
+            """
+        )
+
+        connection.execute(
+            """
+            INSERT INTO monitoring_results
+            (device_ip, check_type, status, details, latency_ms)
+            VALUES
+            ('10.0.0.10', 'SERVICE_ENUMERATION', 'OPEN',
+             'DEMO DATA - Port 80 - HTTP', NULL),
+            ('10.0.0.10', 'SERVICE_ENUMERATION', 'OPEN',
+             'DEMO DATA - Port 443 - HTTPS', NULL),
+            ('10.0.0.11', 'SERVICE_ENUMERATION', 'OPEN',
+             'DEMO DATA - Port 22 - SSH', NULL),
+            ('10.0.0.10', 'SNMP', 'SUCCESS',
+             'DEMO DATA - SNMP system information', NULL),
+            ('10.0.0.10', 'TOPOLOGY', 'SUCCESS',
+             'DEMO DATA - Simulated route: 10.0.0.1 -> 10.0.0.10', NULL)
+            """
+        )
+
+    st.info("DEMO MODE: Displaying simulated network monitoring records.")
+    initialize_demo_data()
 # ============================================================
 # DATABASE AND NETWORK FUNCTIONS
 # ============================================================
