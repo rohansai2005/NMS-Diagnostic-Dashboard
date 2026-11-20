@@ -132,7 +132,13 @@ def initialize_demo_data():
         )
 
     st.info("DEMO MODE: Displaying simulated network monitoring records.")
-    initialize_demo_data()
+    
+
+initialize_demo_data()
+
+# =========================================
+# DATABASE AND NETWORK FUNCTIONS
+# =========================================    
 # ============================================================
 # DATABASE AND NETWORK FUNCTIONS
 # ============================================================
