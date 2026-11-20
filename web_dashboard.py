@@ -12,6 +12,7 @@ from app.database import (
     create_device_alert,
     resolve_device_alert,
     save_result,
+    initialize_database,
 )
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -31,10 +32,12 @@ from reportlab.platypus import (
 # ============================================================
 
 st.set_page_config(
+    
     page_title="NMS Network Monitoring",
     page_icon="🌐",
     layout="wide",
 )
+initialize_database()
 
 DATABASE_PATH = Path(__file__).resolve().parent / "app" / "nms.db"
 
