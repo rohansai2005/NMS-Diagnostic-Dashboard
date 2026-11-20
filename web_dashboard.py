@@ -232,6 +232,7 @@ def run_health_checks(dataframe):
 
 st.markdown(
     """
+    
     <style>
     /* Elegant enterprise typography: Manrope for headings, Inter for UI/body.
        System-font fallbacks keep the dashboard readable if Google Fonts are unavailable. */
@@ -246,6 +247,14 @@ st.markdown(
         --nms-muted: #9aabc2;
         --nms-text: #e8eef7;
     }
+    /* Hide floating Streamlit icons */
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    .stAppDeployButton {
+        display: none !important;
+    }
+
+    </style>
     .stApp {
         background:
             radial-gradient(circle at 85% 0%, rgba(14,116,144,.13), transparent 30%),
