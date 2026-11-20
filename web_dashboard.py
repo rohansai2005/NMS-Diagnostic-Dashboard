@@ -232,10 +232,8 @@ def run_health_checks(dataframe):
 
 st.markdown(
     """
-    
     <style>
-    /* Elegant enterprise typography: Manrope for headings, Inter for UI/body.
-       System-font fallbacks keep the dashboard readable if Google Fonts are unavailable. */
+    /* Elegant enterprise typography */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
 
     :root {
@@ -247,20 +245,24 @@ st.markdown(
         --nms-muted: #9aabc2;
         --nms-text: #e8eef7;
     }
-    /* Hide floating Streamlit icons */
-    [data-testid="stDecoration"],
-    [data-testid="stStatusWidget"],
-    .stAppDeployButton {
-        display: none !important;
-    }
 
-    </style>
+    /* KEEP ALL YOUR EXISTING DASHBOARD CSS HERE */
+
     .stApp {
         background:
             radial-gradient(circle at 85% 0%, rgba(14,116,144,.13), transparent 30%),
             var(--nms-bg);
         color: var(--nms-text);
     }
+
+    /* Hide floating Streamlit icons */
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    [data-testid="stDeployButton"],
+    .stAppDeployButton {
+        display: none !important;
+    }
+
     html, body, [class*="css"], .stApp, [data-testid="stAppViewContainer"] {
         font-family: 'Inter', 'Aptos', 'Segoe UI', sans-serif !important;
         font-feature-settings: "cv11", "ss01";
